@@ -40,3 +40,11 @@ dotnet ef database update `
 docker compose -f docker-compose.infra.yaml down -v
 
 ```
+
+---
+
+## Give a Star! :star2:
+
+If you liked this project or if it helped you, please give a star :star: for this repository. Thank you!!!
+
+---

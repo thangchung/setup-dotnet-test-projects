@@ -21,18 +21,21 @@ public class DoTestCreatePerson : PeopleServiceTestBase<CreatePersonTestFixture>
             Name = this._faker.Random.String2(40)
         };
 
-        await this.ExecuteDbContextAsync(async db =>
+        await this._fixture.ExecuteAsync(async factory =>
         {
-            db.Add(person);
-            await db.SaveChangesAsync();
+            await factory.ExecuteDbContextSaveChangeAsync(async dbContext =>
+            {
+                dbContext.Add(person);
+                await dbContext.SaveChangesAsync();
 
-            this._testFixture.DeletePerson(person.Id);
-        });
+                this._fixture.DeletePerson(person.Id);
+            });
 
-        await this.ExecuteDbContextAsync(async db =>
-        {
-            person = await db.People.FirstOrDefaultAsync(p => p.Id == person.Id);
-            person.Should().NotBeNull();
+            await factory.ExecuteDbContextQueryAsync(async dbContext =>
+            {
+                person = await dbContext.Set<Person>().FirstOrDefaultAsync(p => p.Id == person.Id);
+                person.Should().NotBeNull();
+            });
         });
     }
 }

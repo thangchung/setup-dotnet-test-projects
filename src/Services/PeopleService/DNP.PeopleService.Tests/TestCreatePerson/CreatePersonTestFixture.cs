@@ -22,14 +22,15 @@ public class CreatePersonTestFixture : PeopleServiceTestFixture
     {
         await base.DisposeAsync();
 
-        await this.ExecuteDbContextAsync(async dbContext =>
+        await this.ExecuteAsync(async factory =>
         {
-            //var people = await dbContext.People.Where(p => this._personIds.Contains(p.Id)).ToListAsync();
+            await factory.ExecuteDbContextSaveChangeAsync(async dbContext =>
+            {
+                await dbContext.Set<Person>()
+                    .Where(_ => this._personIds.Contains(_.Id))
+                    .ExecuteDeleteAsync();
 
-            var people = this._personIds.Select(id => new Person { Id = id }).ToList();
-
-            dbContext.RemoveRange(people);
-            await dbContext.SaveChangesAsync();
+            });
         });
     }
 }

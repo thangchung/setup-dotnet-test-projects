@@ -1,9 +1,7 @@
-﻿using DNP.PeopleService.Persistence;
-using DNP.ServiceProjectTestTemplate;
-
+﻿using Xunit;
 
 namespace DNP.PeopleService.Tests;
-public class PeopleServiceTestFixture : BaseTestFixture<PeopleDbContext>
+public class PeopleServiceTestFixture : IAsyncLifetime
 {
     private readonly PeopleServiceWebApplicationFactory _webApplicationFactory;
 
@@ -12,7 +10,12 @@ public class PeopleServiceTestFixture : BaseTestFixture<PeopleDbContext>
         this._webApplicationFactory = webApplicationFactory;
     }
 
-    protected override IServiceProvider ServiceProvider => this._webApplicationFactory.Services;
+    public async Task ExecuteAsync(Func<PeopleServiceWebApplicationFactory, Task> func)
+    {
+        await func.Invoke(this._webApplicationFactory);
+    }
 
-    public override HttpClient HttpClient => this._webApplicationFactory.CreateClient();
+    public async virtual Task InitializeAsync() => await Task.Yield();
+
+    public async virtual Task DisposeAsync() => await Task.Yield();
 }

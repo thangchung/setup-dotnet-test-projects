@@ -12,19 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "__", "__", "{531AD3C9-B978-
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildingBlocks", "BuildingBlocks", "{608E0D2D-A341-4270-96AE-B67C322EDEF3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNP.ServiceProjectTestTemplate", "src\BuildingBlocks\DNP.ServiceProjectTestTemplate\DNP.ServiceProjectTestTemplate.csproj", "{CAD6C977-CBB7-4BEF-B047-1EC073927D41}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{78C8B387-2981-428B-87BD-6A1625BE6748}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "People", "People", "{DD913192-D4C1-4161-BC76-29AD9B763159}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNP.PeopleService", "src\Services\PeopleService\DNP.PeopleService\DNP.PeopleService.csproj", "{878A8ADA-9E41-4780-8B36-2DB1095B9569}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNP.PeopleService", "src\Services\PeopleService\DNP.PeopleService\DNP.PeopleService.csproj", "{878A8ADA-9E41-4780-8B36-2DB1095B9569}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNP.PeopleService.Tests", "src\Services\PeopleService\DNP.PeopleService.Tests\DNP.PeopleService.Tests.csproj", "{D29011FE-0A73-4E63-A213-BB06A1B49DB8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DNP.ServiceProjectTemplate", "src\BuildingBlocks\DNP.ServiceProjectTemplate\DNP.ServiceProjectTemplate.csproj", "{2FDD4512-5C7E-40A7-8D22-13FF26323A00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DNP.PeopleService.Tests", "src\Services\PeopleService\DNP.PeopleService.Tests\DNP.PeopleService.Tests.csproj", "{D29011FE-0A73-4E63-A213-BB06A1B49DB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,10 +26,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CAD6C977-CBB7-4BEF-B047-1EC073927D41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CAD6C977-CBB7-4BEF-B047-1EC073927D41}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CAD6C977-CBB7-4BEF-B047-1EC073927D41}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CAD6C977-CBB7-4BEF-B047-1EC073927D41}.Release|Any CPU.Build.0 = Release|Any CPU
 		{878A8ADA-9E41-4780-8B36-2DB1095B9569}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{878A8ADA-9E41-4780-8B36-2DB1095B9569}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{878A8ADA-9E41-4780-8B36-2DB1095B9569}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,20 +34,14 @@ Global
 		{D29011FE-0A73-4E63-A213-BB06A1B49DB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D29011FE-0A73-4E63-A213-BB06A1B49DB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D29011FE-0A73-4E63-A213-BB06A1B49DB8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2FDD4512-5C7E-40A7-8D22-13FF26323A00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FDD4512-5C7E-40A7-8D22-13FF26323A00}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FDD4512-5C7E-40A7-8D22-13FF26323A00}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FDD4512-5C7E-40A7-8D22-13FF26323A00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{CAD6C977-CBB7-4BEF-B047-1EC073927D41} = {608E0D2D-A341-4270-96AE-B67C322EDEF3}
 		{DD913192-D4C1-4161-BC76-29AD9B763159} = {78C8B387-2981-428B-87BD-6A1625BE6748}
 		{878A8ADA-9E41-4780-8B36-2DB1095B9569} = {DD913192-D4C1-4161-BC76-29AD9B763159}
 		{D29011FE-0A73-4E63-A213-BB06A1B49DB8} = {DD913192-D4C1-4161-BC76-29AD9B763159}
-		{2FDD4512-5C7E-40A7-8D22-13FF26323A00} = {608E0D2D-A341-4270-96AE-B67C322EDEF3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2059A513-BFFA-4025-B687-8107F5B45066}

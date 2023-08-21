@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       ACCEPT_EULA: Y
-      MSSQL_SA_PASSWORD: test@123
+      MSSQL_SA_PASSWORD: P@ssw0rd!
     volumes:
       - sqlvolume:/var/opt/mssql
     ports:

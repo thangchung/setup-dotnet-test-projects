@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 using Xunit;
+using Testcontainers.MsSql;
+using Microsoft.Extensions.Configuration;
 
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
@@ -22,12 +24,40 @@ public class PersonalServiceTestCollection : ICollectionFixture<PeopleServiceWeb
 
 public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
 {
+    private readonly MsSqlContainer _container;
+
+    public PeopleServiceWebApplicationFactory()
+    {
+        this._container = new MsSqlBuilder()
+                .WithAutoRemove(true)
+                .WithCleanUp(true)
+                .WithHostname("test")
+                .WithExposedPort(14333)
+                .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+                .WithPassword("P@ssw0rd-01")
+                .Build();
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        var settingsInMemory = new Dictionary<string, string?>
+        {
+            ["ConnectionStrings:Default"] = this._container.GetConnectionString()
+        };
+
+        var configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(settingsInMemory)
+                .Build();
+
         builder
             .UseEnvironment("Integration-Test")
             .UseContentRoot(Directory.GetCurrentDirectory())
+            .UseConfiguration(configuration)
             .UseTestServer()
+            .ConfigureAppConfiguration(cfg =>
+            {
+                cfg.AddInMemoryCollection(settingsInMemory);
+            })
             .ConfigureServices(services =>
             {
                 services.RemoveAll<IHostedService>();
@@ -37,7 +67,6 @@ public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
 
     protected virtual void ConfigureTestServices(IServiceCollection services)
     {
-
     }
 
     public async Task ExecuteDbContextSaveChangeAsync(Func<DbContext, Task> func)
@@ -88,4 +117,6 @@ public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
         using var httpClient = this.CreateClient();
         await func.Invoke(httpClient);
     }
+
+    public async Task StartContainerAsync() => await this._container.StartAsync();
 }

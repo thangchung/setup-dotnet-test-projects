@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Microsoft.EntityFrameworkCore;
+using Xunit;
 
 namespace DNP.PeopleService.Tests;
 public class PeopleServiceTestFixture : IAsyncLifetime
@@ -15,7 +16,20 @@ public class PeopleServiceTestFixture : IAsyncLifetime
         await func.Invoke(this._webApplicationFactory);
     }
 
-    public async virtual Task InitializeAsync() => await Task.Yield();
+    public async virtual Task InitializeAsync()
+    {
+        await this._webApplicationFactory.StartContainerAsync();
+
+        await this._webApplicationFactory.ExecuteDbContextQueryAsync(async dbContext =>
+        {
+            var database = dbContext.Database;
+            var pendingMigrations = await database.GetPendingMigrationsAsync();
+            if (pendingMigrations.Any())
+            {
+                await database.MigrateAsync();
+            }
+        });
+    }
 
     public async virtual Task DisposeAsync() => await Task.Yield();
 }

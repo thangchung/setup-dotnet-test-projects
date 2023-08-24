@@ -3,48 +3,23 @@
 An introduction how to setup and organize the test projects in .NET
 
 
-## Overview
+## Features
 
-- Please read the [How to setup test project](/src/Services/PeopleService/DNP.PeopleService.Tests/README.md)
+- [MSSQL TestContainer](https://testcontainers.com/modules/mssql/) in order to isolating database from integration test with others.
+- [Memory Configuration Provider](https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration-providers#memory-configuration-provider) to override the settings for testing
 
-## Steps
+## First
 
-### Starting up
+1. Define `PeopleServiceWebApplicationFactory` which is a custom of `WebApplicationFactory`
+2. Define `PeopleServiceTestFixture` which is an implementation of `IAsyncLifetime`
+3. Define `PeopleServiceTestBase` the base class of every test
 
-```bash
+## Then implement tests
 
-docker compose -f docker-compose.infra.yaml up -d
-
-```
-
-
-```bash
-
-dotnet ef database update `
--p src\Services\PeopleService\DNP.PeopleService `
--s src\Services\PeopleService\DNP.PeopleService `
--c PeopleDbContext
-
-```
+1. Define `CreatePersonTestFixture.cs` inherits from `PeopleServiceTestFixture`
+2. Define `DoTestCreatePerson` inherits from `PeopleServiceTestBase`
 
 
-### Run the tests
+## Resources
 
-1. The simple test has been defined at `DoTestCreatePerson`
-2. The created data will be deleted after tested
-
-### Cleanup
-
-```bash
-
-docker compose -f docker-compose.infra.yaml down -v
-
-```
-
----
-
-## Give a Star! :star2:
-
-If you liked this project or if it helped you, please give a star :star: for this repository. Thank you!!!
-
----
+- [Shared Context between Tests](https://xunit.net/docs/shared-context)

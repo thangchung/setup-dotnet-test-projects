@@ -23,3 +23,5 @@ An introduction how to setup and organize the test projects in .NET
 ## Resources
 
 - [Shared Context between Tests](https://xunit.net/docs/shared-context)
+- [Integration Testing with xUnit](https://www.jimmybogard.com/integration-testing-with-xunit/)
+- [How to create Parameterized Tests with xUnit](https://davecallan.com/creating-parameterized-tests-xunit/)

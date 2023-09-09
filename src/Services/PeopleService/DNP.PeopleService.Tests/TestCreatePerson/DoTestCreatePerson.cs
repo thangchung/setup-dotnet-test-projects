@@ -5,11 +5,30 @@ using Xunit;
 using Xunit.Abstractions;
 
 namespace DNP.PeopleService.Tests.TestCreatePerson;
-public class DoTestCreatePerson : PeopleServiceTestBase<CreatePersonTestFixture>
+public class DoTestCreatePerson : PeopleServiceTestBase
 {
-    public DoTestCreatePerson(CreatePersonTestFixture testFixture, ITestOutputHelper testOutputHelper) 
-            : base(testFixture, testOutputHelper)
+    public DoTestCreatePerson(PersonalServiceTestCollectionFixture testCollectionFixture, ITestOutputHelper testOutput) : base(testCollectionFixture, testOutput)
     {
+    }
+
+    protected readonly List<Guid> _personIds = new();
+
+    private void DeletePerson(Guid? personId = null)
+    {
+        if (personId == null) return;
+        this._personIds.Add(personId.Value);
+    }
+
+    public override async Task DisposeAsync()
+    {
+        await base.DisposeAsync();
+
+        await this.ExecuteTransactionDbContextAsync(async dbContext =>
+        {
+            await dbContext.Set<Person>()
+                    .Where(_ => this._personIds.Contains(_.Id))
+                    .ExecuteDeleteAsync();
+        });
     }
 
     [Fact]
@@ -21,15 +40,15 @@ public class DoTestCreatePerson : PeopleServiceTestBase<CreatePersonTestFixture>
             Name = this._faker.Random.String2(40)
         };
 
-        await this._fixture.ExecuteTransactionDbContextAsync(async dbContext =>
+        await this.ExecuteTransactionDbContextAsync(async dbContext =>
         {
             dbContext.Add(person);
             await dbContext.SaveChangesAsync();
 
-            this._fixture.DeletePerson(person.Id);
+            this.DeletePerson(person.Id);
         });
 
-        await this._fixture.ExecuteDbContextAsync(async dbContext =>
+        await this.ExecuteDbContextAsync(async dbContext =>
         {
             person = await dbContext.Set<Person>().FirstOrDefaultAsync(p => p.Id == person.Id);
             person.Should().NotBeNull();

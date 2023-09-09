@@ -7,41 +7,24 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
-using Xunit;
-using Testcontainers.MsSql;
 using Microsoft.Extensions.Configuration;
-
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace DNP.PeopleService.Tests;
 
-[CollectionDefinition(nameof(PersonalServiceTestCollection))]
-public class PersonalServiceTestCollection : ICollectionFixture<PeopleServiceWebApplicationFactory>
-{
-
-}
-
 public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly MsSqlContainer _container;
+    private readonly string _connectionString = default!;
 
-    public PeopleServiceWebApplicationFactory()
+    public PeopleServiceWebApplicationFactory(string connectionString)
     {
-        this._container = new MsSqlBuilder()
-                .WithAutoRemove(true)
-                .WithCleanUp(true)
-                .WithHostname("test")
-                .WithExposedPort(14333)
-                .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
-                .WithPassword("P@ssw0rd-01")
-                .Build();
+        this._connectionString = connectionString;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         var settingsInMemory = new Dictionary<string, string?>
         {
-            ["ConnectionStrings:Default"] = this._container.GetConnectionString()
+            ["ConnectionStrings:Default"] = this._connectionString
         };
 
         var configuration = new ConfigurationBuilder()
@@ -61,11 +44,10 @@ public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
             {
                 services.RemoveAll<IHostedService>();
             })
-            .ConfigureTestServices(this.ConfigureTestServices);
-    }
-
-    protected virtual void ConfigureTestServices(IServiceCollection services)
-    {
+            .ConfigureTestServices(services =>
+            {
+                //TODO: override services for testing only
+            });
     }
 
     public async Task ExecuteServiceAsync(Func<IServiceProvider, Task> func)
@@ -82,6 +64,4 @@ public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
             return jsonSettings?.SerializerOptions ?? new JsonSerializerOptions();
         }
     }
-
-    public async Task StartContainerAsync() => await this._container.StartAsync();
 }

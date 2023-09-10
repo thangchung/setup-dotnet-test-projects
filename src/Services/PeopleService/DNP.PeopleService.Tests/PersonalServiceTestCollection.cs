@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 using Testcontainers.MsSql;
 using Xunit;
 
-[assembly: CollectionBehavior(DisableTestParallelization = true)]
+[assembly: CollectionBehavior(DisableTestParallelization = false)]
 
 namespace DNP.PeopleService.Tests;
 
@@ -20,28 +21,41 @@ public class PersonalServiceTestCollectionFixture : IAsyncLifetime
 
     public PeopleServiceWebApplicationFactory Factory { get; private set; } = default!;
 
+
     public PersonalServiceTestCollectionFixture()
     {
+        Debug.WriteLine($"{nameof(PersonalServiceTestCollectionFixture)} constructor");
+
         this.Container = new MsSqlBuilder()
                 .WithAutoRemove(true)
                 .WithCleanUp(true)
                 .WithHostname("test")
-                .WithExposedPort(14333)
+                .WithPortBinding(1433, assignRandomHostPort: true)
                 .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
                 .WithPassword("P@ssw0rd-01")
+                .WithStartupCallback(async (container, cancellationToken) =>
+                {
+                    Debug.WriteLine($"{nameof(PersonalServiceTestCollectionFixture)} - after container started");
+
+                    var msSqlContainer = (MsSqlContainer)container;
+                    this.Factory = new PeopleServiceWebApplicationFactory(msSqlContainer.GetConnectionString());
+                    
+                    await Task.Yield();
+                })
                 .Build();
     }
 
     public async Task DisposeAsync()
     {
         await this.Container.DisposeAsync();
+        Debug.WriteLine($"{nameof(PersonalServiceTestCollectionFixture)} {nameof(DisposeAsync)}");
     }
 
     public async Task InitializeAsync()
     {
-        await this.Container.StartAsync();
+        Debug.WriteLine($"{nameof(PersonalServiceTestCollectionFixture)} {nameof(InitializeAsync)}");
 
-        this.Factory = new PeopleServiceWebApplicationFactory(this.Container.GetConnectionString());
+        await this.Container.StartAsync();
 
         await this.Factory.ExecuteServiceAsync(async serviceProvider =>
         {

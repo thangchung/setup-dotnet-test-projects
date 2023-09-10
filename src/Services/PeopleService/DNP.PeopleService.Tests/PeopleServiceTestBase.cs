@@ -3,11 +3,12 @@ using Xunit;
 using Bogus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Diagnostics;
 
 namespace DNP.PeopleService.Tests;
 
 [Collection(nameof(PersonalServiceTestCollection))]
-public abstract class PeopleServiceTestBase: IClassFixture<PersonalServiceTestCollectionFixture>, IAsyncLifetime
+public abstract class PeopleServiceTestBase: IAsyncLifetime
 {
     protected readonly PeopleServiceWebApplicationFactory _factory;
     protected readonly ITestOutputHelper _testOutput;
@@ -18,6 +19,8 @@ public abstract class PeopleServiceTestBase: IClassFixture<PersonalServiceTestCo
         this._factory = testCollectionFixture.Factory;
         this._testOutput = testOutput;
         this._faker = new Faker();
+
+        Debug.WriteLine($"{nameof(PeopleServiceTestBase)} constructor");
     }
 
     protected Func<Faker, string> FakerPhoneNumber = faker => faker.Phone.PhoneNumber("## ### ####");
@@ -66,10 +69,12 @@ public abstract class PeopleServiceTestBase: IClassFixture<PersonalServiceTestCo
     public virtual async Task InitializeAsync()
     {
         await Task.Yield();
+        Debug.WriteLine($"{nameof(PeopleServiceTestBase)} {nameof(InitializeAsync)}");
     }
 
     public virtual async Task DisposeAsync()
     {
         await Task.Yield();
+        Debug.WriteLine($"{nameof(PeopleServiceTestBase)} {nameof(DisposeAsync)}");
     }
 }

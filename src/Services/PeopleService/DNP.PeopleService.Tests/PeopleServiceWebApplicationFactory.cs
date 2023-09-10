@@ -8,16 +8,19 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics;
+using Xunit;
 
 namespace DNP.PeopleService.Tests;
 
-public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
+public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly string _connectionString = default!;
 
     public PeopleServiceWebApplicationFactory(string connectionString)
     {
         this._connectionString = connectionString;
+        Debug.WriteLine($"{nameof(PeopleServiceWebApplicationFactory)} constructor");
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -54,6 +57,20 @@ public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
     {
         using var scope = this.Services.CreateAsyncScope();
         await func.Invoke(scope.ServiceProvider);
+    }
+
+    public virtual async Task InitializeAsync()
+    {
+        await Task.Yield();
+
+        Debug.WriteLine($"{nameof(PeopleServiceWebApplicationFactory)} {nameof(InitializeAsync)}");
+    }
+
+    public new virtual async Task DisposeAsync()
+    {
+        await Task.Yield();
+
+        Debug.WriteLine($"{nameof(PeopleServiceWebApplicationFactory)} {nameof(DisposeAsync)}");
     }
 
     public JsonSerializerOptions JsonSerializerSettings

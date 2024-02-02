@@ -4,11 +4,13 @@ using Bogus;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
+using System.Text;
+using System.Text.Json;
 
 namespace DNP.PeopleService.Tests;
 
 [Collection(nameof(PersonalServiceTestCollection))]
-public abstract class PeopleServiceTestBase: IAsyncLifetime
+public abstract class PeopleServiceTestBase : IAsyncLifetime
 {
     protected readonly PeopleServiceWebApplicationFactory _factory;
     protected readonly ITestOutputHelper _testOutput;
@@ -16,9 +18,9 @@ public abstract class PeopleServiceTestBase: IAsyncLifetime
 
     protected PeopleServiceTestBase(PersonalServiceTestCollectionFixture testCollectionFixture, ITestOutputHelper testOutput)
     {
-        this._factory = testCollectionFixture.Factory;
-        this._testOutput = testOutput;
-        this._faker = new Faker();
+        _factory = testCollectionFixture.Factory;
+        _testOutput = testOutput;
+        _faker = new Faker();
 
         Debug.WriteLine($"{nameof(PeopleServiceTestBase)} constructor");
     }
@@ -27,12 +29,12 @@ public abstract class PeopleServiceTestBase: IAsyncLifetime
 
     protected async Task ExecuteServiceAsync(Func<IServiceProvider, Task> func)
     {
-        await this._factory.ExecuteServiceAsync(func);
+        await _factory.ExecuteServiceAsync(func);
     }
 
     protected async Task ExecuteTransactionDbContextAsync(Func<DbContext, Task> func)
     {
-        await this._factory.ExecuteServiceAsync(async serviceProvider =>
+        await _factory.ExecuteServiceAsync(async serviceProvider =>
         {
             var dbContext = serviceProvider.GetRequiredService<DbContext>();
 
@@ -52,7 +54,7 @@ public abstract class PeopleServiceTestBase: IAsyncLifetime
 
     protected async Task ExecuteDbContextAsync(Func<DbContext, Task> func)
     {
-        await this._factory.ExecuteServiceAsync(async serviceProvider =>
+        await _factory.ExecuteServiceAsync(async serviceProvider =>
         {
             var dbContext = serviceProvider.GetRequiredService<DbContext>();
 
@@ -62,7 +64,7 @@ public abstract class PeopleServiceTestBase: IAsyncLifetime
 
     protected async Task ExecuteHttpClientAsync(Func<HttpClient, Task> func)
     {
-        using var httpClient = this._factory.CreateClient();
+        using var httpClient = _factory.CreateClient();
         await func.Invoke(httpClient);
     }
 
@@ -76,5 +78,21 @@ public abstract class PeopleServiceTestBase: IAsyncLifetime
     {
         await Task.Yield();
         Debug.WriteLine($"{nameof(PeopleServiceTestBase)} {nameof(DisposeAsync)}");
+    }
+
+    protected StringContent ConvertRequestToStringContent(object request)
+    {
+        var jsonSerializerSettings = _factory.JsonSerializerSettings;
+
+        var requestAsJson = JsonSerializer.Serialize(request, jsonSerializerSettings);
+
+        return new StringContent(requestAsJson, Encoding.UTF8, "application/json");
+    }
+
+    protected async ValueTask<TModel?> ParseResponse<TModel>(HttpResponseMessage response)
+    {
+        var content = await response.Content.ReadAsStringAsync();
+
+        return JsonSerializer.Deserialize<TModel>(content, _factory.JsonSerializerSettings);
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Json;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -10,16 +8,20 @@ using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using System.Diagnostics;
 using Xunit;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 
 namespace DNP.PeopleService.Tests;
 
 public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
-    private readonly string _connectionString = default!;
+    private readonly string _postgresqlConnectionString = default!;
+    private readonly string _rabbitmqConnectionString = default!;
 
-    public PeopleServiceWebApplicationFactory(string connectionString)
+    public PeopleServiceWebApplicationFactory(string postgresqlConnectionString, string rabbitmqConnectionString)
     {
-        this._connectionString = connectionString;
+        _postgresqlConnectionString = postgresqlConnectionString;
+        _rabbitmqConnectionString = rabbitmqConnectionString;
         Debug.WriteLine($"{nameof(PeopleServiceWebApplicationFactory)} constructor");
     }
 
@@ -27,7 +29,8 @@ public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
     {
         var settingsInMemory = new Dictionary<string, string?>
         {
-            ["ConnectionStrings:Default"] = this._connectionString
+            ["ConnectionStrings:Postgresql"] = _postgresqlConnectionString,
+            ["ConnectionStrings:Rabbitmq"] = _rabbitmqConnectionString
         };
 
         var configuration = new ConfigurationBuilder()
@@ -55,7 +58,7 @@ public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
 
     public async Task ExecuteServiceAsync(Func<IServiceProvider, Task> func)
     {
-        using var scope = this.Services.CreateAsyncScope();
+        using var scope = Services.CreateAsyncScope();
         await func.Invoke(scope.ServiceProvider);
     }
 
@@ -77,7 +80,7 @@ public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
     {
         get
         {
-            var jsonSettings = this.Services.GetRequiredService<IOptions<JsonOptions>>().Value;
+            var jsonSettings = Services.GetRequiredService<IOptions<JsonOptions>>().Value;
             return jsonSettings?.SerializerOptions ?? new JsonSerializerOptions();
         }
     }

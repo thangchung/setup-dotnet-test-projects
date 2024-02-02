@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DNP.PeopleService.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class Init_People_Schema : Migration
+    public partial class InitPeopleDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,12 +15,12 @@ namespace DNP.PeopleService.Persistence.Migrations
                 name: "Person",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true)
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Person", x => x.Id);
+                    table.PrimaryKey("pk_person", x => x.id);
                 });
         }
 

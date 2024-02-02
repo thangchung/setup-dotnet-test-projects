@@ -1,35 +1,50 @@
 
 using DNP.PeopleService.Persistence;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Additional configuration is required to successfully run gRPC on macOS.
-// For instructions on how to configure Kestrel and gRPC clients on macOS, visit https://go.microsoft.com/fwlink/?linkid=2099682
-
-// Add services to the container.
-builder.Services.AddGrpc();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var configuration = builder.Configuration;
-var connectionString = configuration.GetConnectionString("default");
+var connectionString = configuration.GetConnectionString("Postgresql");
 builder.Services.AddDbContext<DbContext, PeopleDbContext>(db =>
 {
-    db.UseSqlServer(connectionString, options =>
+    db.UseNpgsql(connectionString, options =>
     {
         //options.EnableRetryOnFailure();
         options.MigrationsAssembly(typeof(PeopleDbContext).Assembly.GetName().Name);
+    }).UseSnakeCaseNamingConvention();
+});
+
+builder.Services.AddMassTransit(x =>
+{
+    x.SetKebabCaseEndpointNameFormatter();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(builder.Configuration.GetConnectionString("Rabbitmq")!);
+        cfg.ConfigureEndpoints(context);
     });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-app.MapGet("/", () => "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-await app.RunAsync();
+app.UseRouting();
 
+// app.MapGet("/", () => "Hello world");
+app.MapGet("/", () => new TestModel(12, "hello"));
 
-/// <summary>
-/// https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-6.0#basic-tests-with-the-default-webapplicationfactory-1
-/// </summary>
+app.Run();
+
+record TestModel(int Age, string Name);
+
 public partial class Program { }

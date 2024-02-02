@@ -13,6 +13,15 @@
     -reporttypes:Html
 ```
 
+Try code coverage => https://github.com/microsoft/testfx/blob/main/samples/mstest-runner/Simple1/Simple1.csproj#L32
+
 ## Mock identity context
 
 TODO
+
+## Refs
+- https://devblogs.microsoft.com/dotnet/introducing-ms-test-runner/
+- https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-8.0
+- https://learn.microsoft.com/en-us/dotnet/core/testing/unit-testing-code-coverage?tabs=windows#code-coverage-tooling
+- https://dotnet.testcontainers.org/examples/aspnet/
+- https://github.com/testcontainers/testcontainers-dotnet/blob/develop/examples/WeatherForecast/tests/WeatherForecast.InProcess.Tests/WeatherForecast.InProcess.Tests.csproj

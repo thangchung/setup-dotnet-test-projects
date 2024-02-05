@@ -43,6 +43,7 @@ public class PersonalServiceTestCollectionFixture : IAsyncLifetime
         PostgreSQLContainer = new PostgreSqlBuilder()
                 .WithAutoRemove(true)
                 .WithCleanUp(true)
+                .WithName("postgresql")
                 .WithHostname("test")
                 .WithPortBinding(5432, assignRandomHostPort: true)
                 .WithDatabase("postgres")
@@ -53,6 +54,7 @@ public class PersonalServiceTestCollectionFixture : IAsyncLifetime
         RabbitMQContainer = new RabbitMqBuilder()
             .WithAutoRemove(true)
             .WithCleanUp(true)
+            .WithName("rabbitmq")
             .WithHostname("test")
             .Build();
 

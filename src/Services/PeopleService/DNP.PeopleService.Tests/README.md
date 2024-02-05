@@ -20,8 +20,15 @@
 
 ```bash
 > dotnet reportgenerator \
-    -reports:"/home/thangchung/ip/spikes/setup-dotnet-test-projects/src/Services/PeopleService/DNP.PeopleService.Tests/TestResults/0e25bf88-40f0-4aec-9c04-d98393c55304/coverage.cobertura.xml" \
+    -reports:"/home/thangchung/ip/spikes/setup-dotnet-test-projects/src/Services/PeopleService/DNP.PeopleService.Tests/TestResults/6816ea65-b172-4f10-93a0-a70851cae31a/coverage.cobertura.xml" \
     -targetdir:"coveragereport" \
+    -reporttypes:Html
+```
+
+```powershell
+> dotnet reportgenerator `
+    -reports:"C:\Users\thangchung\source_code\gh\setup-dotnet-test-projects\src\Services\PeopleService\DNP.PeopleService.Tests\TestResults\6816ea65-b172-4f10-93a0-a70851cae31a/coverage.cobertura.xml" `
+    -targetdir:"coveragereport" `
     -reporttypes:Html
 ```
 

@@ -1,19 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <EnableMSTestRunner>true</EnableMSTestRunner>
-    <OutputType>Exe</OutputType>
-
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
     <IsPackable>false</IsPackable>
+
+    <EnableMSTestRunner>true</EnableMSTestRunner>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
 	  <PackageReference Include="FluentAssertions" />
     <PackageReference Include="MSTest" />
-    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    <!-- <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" /> -->
+    <!-- <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" /> -->
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" /> 
 	  <PackageReference Include="AutoBogus.Conventions" />
 	  <PackageReference Include="Testcontainers.PostgreSql" />

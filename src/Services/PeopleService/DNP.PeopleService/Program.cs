@@ -1,4 +1,5 @@
 
+using DNP.PeopleService.Consumers;
 using DNP.PeopleService.Persistence;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -21,12 +22,30 @@ builder.Services.AddDbContext<DbContext, PeopleDbContext>(db =>
 
 builder.Services.AddMassTransit(x =>
 {
+    x.AddConsumersFromNamespaceContaining<SomethingDoneConsumer>();
+
     x.SetKebabCaseEndpointNameFormatter();
 
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration.GetConnectionString("Rabbitmq")!);
         cfg.ConfigureEndpoints(context);
+    });
+});
+
+builder.Services.AddAuthentication()
+    .AddJwtBearer(options =>
+    {
+        options.Authority = "https://demo.duendesoftware.com";
+        options.TokenValidationParameters.ValidateAudience = false;
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("ApiScope", policy =>
+    {
+        policy.RequireAuthenticatedUser();
+        policy.RequireClaim("scope", "api");
     });
 });
 
@@ -40,8 +59,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-// app.MapGet("/", () => "Hello world");
-app.MapGet("/", () => new TestModel(12, "hello"));
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapGet("/", async (IPublishEndpoint endpoint) => {
+    await endpoint.Publish(new SomethingDone("What's gone is gone!!!"));
+
+    return new TestModel(12, "hello");
+});
+
+app.MapGet("/hello", () => new TestModel(12, "hello")).RequireAuthorization("ApiScope");
 
 app.Run();
 

@@ -10,6 +10,9 @@ using System.Diagnostics;
 using Xunit;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using MassTransit;
+using DNP.PeopleService.Consumers;
+using Microsoft.AspNetCore.Authentication;
 
 namespace DNP.PeopleService.Tests;
 
@@ -53,6 +56,14 @@ public class PeopleServiceWebApplicationFactory : WebApplicationFactory<Program>
             .ConfigureTestServices(services =>
             {
                 //TODO: override services for testing only
+                services.AddAuthentication(defaultScheme: "TestScheme")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>(
+                        "TestScheme", options => { });
+
+                services.AddMassTransitTestHarness(x =>
+                {
+                    x.AddConsumer<SomethingDoneConsumer>();
+                });
             });
     }
 

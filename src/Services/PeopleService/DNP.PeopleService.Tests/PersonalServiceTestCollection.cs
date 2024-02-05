@@ -50,7 +50,11 @@ public class PersonalServiceTestCollectionFixture : IAsyncLifetime
                 .WithPassword("P@ssw0rd")
                 .Build();
 
-        RabbitMQContainer = new RabbitMqBuilder().Build();
+        RabbitMQContainer = new RabbitMqBuilder()
+            .WithAutoRemove(true)
+            .WithCleanUp(true)
+            .WithHostname("test")
+            .Build();
 
         await PostgreSQLContainer.StartAsync().ConfigureAwait(false);
         await RabbitMQContainer.StartAsync().ConfigureAwait(false);

@@ -1,9 +1,9 @@
 # Get starting
 
-[x] Try code coverage => https://github.com/microsoft/testfx/blob/main/samples/mstest-runner/Simple1/Simple1.csproj#L32 => was not worked, due to xUnit is not fully support for code coverage.
-[x] Mock MassTransit with ITestHarness
-[x] Mock identity context
-[] Ignore some tests on EF Migrations folder
+- [x] Try code coverage => https://github.com/microsoft/testfx/blob/main/samples/mstest-runner/Simple1/Simple1.csproj#L32 => was not worked, due to xUnit is not fully support for code coverage.
+- [x] Mock MassTransit with ITestHarness
+- [x] Mock identity context
+- [] Ignore some tests on EF Migrations folder
 
 ## Tools
 

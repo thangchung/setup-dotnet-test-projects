@@ -17,6 +17,7 @@
     <!-- <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" /> -->
     <!-- <PackageReference Include="Microsoft.Testing.Extensions.TrxReport" /> -->
 	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" /> 
+    <!-- <PackageReference Include="Microsoft.CodeCoverage" /> -->
 	  <PackageReference Include="AutoBogus.Conventions" />
 	  <PackageReference Include="Testcontainers.PostgreSql" />
     <PackageReference Include="Testcontainers.RabbitMq " />
